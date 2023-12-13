@@ -1,5 +1,6 @@
 // Importerar moduler
 const User = require('../models/user.model');
+const RefreshToken = require('../models/refreshToken.model');
 const config = require("../config/auth.config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -51,34 +52,79 @@ const login = async (req, res) => {
         // Jämför det angivna lösenordet med det lagrade hash-värdet
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 
-        // Skickar respons om lösanordet inte är giltigt
+        // Sätter access token till null och skickar respons om lösanordet inte är giltigt
         if (!passwordIsValid) {
-            return res.status(401).send({ message: "Felaktigt lösenord" });
+            return res.status(401).send({
+                accessToken: null,
+                message: "Felaktigt lösenord"
+            });
         }
 
-        // Genererar en token för användaren
-        const token = jwt.sign({ id: user.id },
-            config.secret,
-            {
-                algorithm: 'HS256',
-                allowInsecureKeySizes: true,
-                expiresIn: 7200, // 2 timmar
-            });
+        // Genererar en access token för användaren
+        let token = jwt.sign({ id: user.id }, config.secret, { expiresIn: config.jwtExpiration });
 
-        // Sparar token i session för att användas vid senare förfrågan
-        req.session.token = token;
+        // Genererar en förnyad token för användaren
+        let refreshToken = await RefreshToken.createToken(user);
 
-        // Skickar respons med användarinformation
+        // Skickar respons med användarinformation och tokens
         return res.status(200).send({
-            message: "Inloggad",
             id: user._id,
-            username: user.username
+            username: user.username,
+            accessToken: token,
+            refreshToken: refreshToken
         });
 
     } catch (err) {
         // Loggar error och skickar respons
         console.error('Fel vid inloggning:', err);
         return res.status(500).send({ message: "Ett fel uppstod vid inloggning" });
+    }
+}
+
+// Funktion för att hantera en förnyelse av access token
+const refreshToken = async (req, res) => {
+
+    // Hämtar refreshToken från förfrågan
+    const { refreshToken: requestToken } = req.body;
+
+    // Skickar respons om requestToken är null
+    if (requestToken == null) {
+        return res.status(403).json({ message: "Förnyad token krävs!" });
+    }
+
+    try {
+        // Hämtar refreshToken från databasen
+        let refreshToken = await RefreshToken.findOne({ token: requestToken });
+
+        // Skickar respons om refreshToken saknas i databasen
+        if (!refreshToken) {
+            res.status(403).json({ message: "Förnyad token saknas i databasen!" });
+            return;
+        }
+
+        // Raderar refreshToken från databasen och skickar respons om refreshToken har förlorat sin giltighetstid
+        if (RefreshToken.verifyExpiration(refreshToken)) {
+            RefreshToken.findOneAndDelete(refreshToken._id, { useFindAndModify: false }).exec();
+            res.status(403).json({
+                message: "Förnyad token har åtgått. Logga in på nytt!",
+            });
+            return;
+        }
+
+        // Genererar en ny access token baserat på användarens ID
+        let newAccessToken = jwt.sign({ id: refreshToken.user._id }, config.secret, {
+            expiresIn: config.jwtExpiration,
+        });
+
+        // Returnerar ny access token och refreshToken som respons
+        return res.status(200).json({
+            accessToken: newAccessToken,
+            refreshToken: refreshToken.token,
+        });
+    } catch (err) {
+        // Felhantering om något går fel under processen
+        console.error('Fel vid förnyelse av token:', err);
+        return res.status(500).send({ message: err.message });
     }
 }
 
@@ -99,4 +145,4 @@ const logout = async (req, res) => {
 }
 
 // Exporterar funktioner
-module.exports = { register, login, logout }
+module.exports = { register, login, refreshToken, logout }

@@ -1,12 +1,24 @@
 // Importerar moduler
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config");
+const { TokenExpiredError } = jwt;
+
+// Metod för att hantera fel vid verifiering av token
+const catchError = (err, res) => {
+    if (err instanceof TokenExpiredError) {
+
+        // Skicker respons om token har gått ut
+        return res.status(401).send({ message: "Unauthorized! Åtkomsttoken har gått ut!" });
+    }
+    // Skickar respons om felet beror på något annat
+    return res.sendStatus(401).send({ message: "Unauthorized!" });
+}
 
 // Middleware-funktion
 verifyToken = (req, res, next) => {
 
-    // Hämtar token från sessionsvariabeln i förfrågan
-    let token = req.session.token;
+    // Hämtar token från headerinformationen i förfrågan
+    let token = req.headers["x-access-token"];
 
     // Om det inte finns någon token skickas respons
     if (!token) {
@@ -18,7 +30,7 @@ verifyToken = (req, res, next) => {
         config.secret,
         (err, decoded) => {
             if (err) {
-                return res.status(401).send({ message: "Unauthorized!" });
+                return catchError(err, res);
             }
 
             // Lägg till användar-ID i förfrågan om token är giltig
