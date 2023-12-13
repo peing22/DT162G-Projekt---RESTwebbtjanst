@@ -4,8 +4,8 @@ const config = require("../config/auth.config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-// Exporterar funktion för att registrera en användare
-exports.register = async (req, res) => {
+// Funktion för att registrera en användare
+const register = async (req, res) => {
 
     try {
         // Kontrollerar att användarnamn och lösenord är angivna
@@ -31,8 +31,8 @@ exports.register = async (req, res) => {
     }
 }
 
-// Exporterar funktion för att logga in en användare
-exports.login = async (req, res) => {
+// Funktion för att logga in en användare
+const login = async (req, res) => {
 
     try {
         // Kontrollerar att användarnamn och lösenord är angivna
@@ -82,8 +82,8 @@ exports.login = async (req, res) => {
     }
 }
 
-// Exporterar funktion för att logga ut en användare
-exports.logout = async (req, res) => {
+// Funktion för att logga ut en användare
+const logout = async (req, res) => {
     try {
         // Sätter sessionen till null för att logga ut användaren
         req.session = null;
@@ -96,4 +96,7 @@ exports.logout = async (req, res) => {
         console.error('Fel vid utloggning:', err);
         return res.status(500).send({ message: "Ett fel uppstod vid utloggning" });
     }
-};
+}
+
+// Exporterar funktioner
+module.exports = { register, login, logout }
