@@ -1,6 +1,6 @@
 // Importerar moduler
 const User = require('../models/user.model');
-const RefreshToken = require('../models/refreshToken.model');
+const RefreshToken = require('../models/refreshtoken.model');
 const config = require("../config/auth.config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -52,12 +52,9 @@ const login = async (req, res) => {
         // Jämför det angivna lösenordet med det lagrade hash-värdet
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 
-        // Sätter access token till null och skickar respons om lösanordet inte är giltigt
+        // Skickar respons om lösenordet inte är giltigt
         if (!passwordIsValid) {
-            return res.status(401).send({
-                accessToken: null,
-                message: "Felaktigt lösenord"
-            });
+            return res.status(401).send({ message: "Felaktigt lösenord" });
         }
 
         // Genererar en accessToken för användaren

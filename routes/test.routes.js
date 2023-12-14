@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const testController = require('../controllers/test.controller');
-const verifyToken = require('../middlewares/authJwt');
+const verifyToken = require('../middlewares/verifytoken.middleware');
 
 // TEST-route
 router.get('/test', verifyToken, testController.test);
