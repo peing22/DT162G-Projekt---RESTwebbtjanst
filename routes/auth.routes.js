@@ -12,7 +12,7 @@ router.post('/login', authController.login);
 router.post('/refreshtoken', authController.refreshToken)
 
 // Logga ut en användare
-router.post('/logout', authController.logout);
+router.post('/logout/:id', authController.logout);
 
 // Exporterar router
 module.exports = router;

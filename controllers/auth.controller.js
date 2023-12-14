@@ -60,13 +60,13 @@ const login = async (req, res) => {
             });
         }
 
-        // Genererar en access token för användaren
+        // Genererar en accessToken för användaren
         let token = jwt.sign({ id: user.id }, config.secret, { expiresIn: config.jwtExpiration });
 
-        // Genererar en förnyad token för användaren
+        // Genererar en refreshToken för användaren
         let refreshToken = await RefreshToken.createToken(user);
 
-        // Skickar respons med användarinformation och tokens
+        // Skickar respons med användarinformation, accessToken och refreshToken
         return res.status(200).send({
             id: user._id,
             username: user.username,
@@ -84,30 +84,28 @@ const login = async (req, res) => {
 // Funktion för att hantera en förnyelse av access token
 const refreshToken = async (req, res) => {
 
-    // Hämtar refreshToken från förfrågan
-    const { refreshToken: requestToken } = req.body;
+    // Lagrar refreshToken från förfrågan
+    const requestToken = req.body.refreshToken;
 
     // Skickar respons om requestToken är null
     if (requestToken == null) {
-        return res.status(403).json({ message: "Förnyad token krävs!" });
+        return res.status(403).json({ message: "Refreshtoken krävs!" });
     }
 
     try {
-        // Hämtar refreshToken från databasen
+        // Lagrar refreshToken om requestToken existerar som token i databasen
         let refreshToken = await RefreshToken.findOne({ token: requestToken });
 
-        // Skickar respons om refreshToken saknas i databasen
+        // Skickar respons om refreshToken är null
         if (!refreshToken) {
-            res.status(403).json({ message: "Förnyad token saknas i databasen!" });
+            res.status(403).json({ message: "Refreshtoken kan inte hittas i databasen!" });
             return;
         }
 
         // Raderar refreshToken från databasen och skickar respons om refreshToken har förlorat sin giltighetstid
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.findOneAndDelete(refreshToken._id, { useFindAndModify: false }).exec();
-            res.status(403).json({
-                message: "Förnyad token har åtgått. Logga in på nytt!",
-            });
+            res.status(403).json({ message: "Refreshtoken är inte längre giltig. Logga in på nytt!" });
             return;
         }
 
@@ -131,8 +129,20 @@ const refreshToken = async (req, res) => {
 // Funktion för att logga ut en användare
 const logout = async (req, res) => {
     try {
-        // Sätter sessionen till null för att logga ut användaren
-        req.session = null;
+        // Skickar respons om användar-ID saknas i URL:en
+        const userId = req.params.id;
+        if (!userId) {
+            return res.status(400).send({ message: "Användar-ID saknas!" });
+        }
+
+        // Skickar respons om användaren inte existerar i databasen
+        const userExists = await User.exists({ _id: userId });
+        if (!userExists) {
+            return res.status(404).send({ message: "Användaren kunde inte hittas i databasen!" });
+        }
+
+        // Tar bort refresh token från databasen baserat på användarens ID
+        await RefreshToken.findOneAndDelete({ user: userId }).exec();
 
         // Skickar respons att användaren är utloggad
         return res.status(200).send({ message: "Utloggad" });

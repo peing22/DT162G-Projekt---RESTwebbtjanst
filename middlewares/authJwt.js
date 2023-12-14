@@ -8,7 +8,7 @@ const catchError = (err, res) => {
     if (err instanceof TokenExpiredError) {
 
         // Skicker respons om token har gått ut
-        return res.status(401).send({ message: "Unauthorized! Åtkomsttoken har gått ut!" });
+        return res.status(401).send({ message: "Unauthorized! Accesstoken har gått ut!" });
     }
     // Skickar respons om felet beror på något annat
     return res.sendStatus(401).send({ message: "Unauthorized!" });
@@ -22,7 +22,7 @@ verifyToken = (req, res, next) => {
 
     // Om det inte finns någon token skickas respons
     if (!token) {
-        return res.status(403).send({ message: "Ingen token tillhandahållen!" });
+        return res.status(403).send({ message: "Ingen accesstoken tillhandahållen!" });
     }
 
     // Verifierar token med hjälp av jwt.verify-metoden

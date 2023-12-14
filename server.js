@@ -4,7 +4,6 @@ require('dotenv').config();
 // Importerar moduler
 const express = require('express');
 const cors = require("cors");
-const cookieSession = require("cookie-session");
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth.routes');
 const testRoutes = require('./routes/test.routes'); // TEST
@@ -23,15 +22,6 @@ app.use(express.json());
 
 // Gör det möjligt att tolka data skickad via URL-parametrar
 app.use(express.urlencoded({ extended: true }));
-
-// Konfigurerar middelware för cookie-session
-app.use(
-    cookieSession({
-        name: "project-session",
-        keys: ["COOKIE_SECRET"],
-        httpOnly: true
-    })
-);
 
 // Lagrar URL till databas
 const mongoString = process.env.DATABASE_URL;
