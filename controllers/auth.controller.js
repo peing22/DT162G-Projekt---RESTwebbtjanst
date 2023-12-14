@@ -2,8 +2,8 @@
 const User = require('../models/user.model');
 const RefreshToken = require('../models/refreshtoken.model');
 const config = require("../config/auth.config");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Funktion för att registrera en användare
 const register = async (req, res) => {
@@ -11,7 +11,7 @@ const register = async (req, res) => {
     try {
         // Kontrollerar att användarnamn och lösenord är angivna
         if (!req.body.username || !req.body.password) {
-            return res.status(400).send({ message: "Användarnamn och lösenord måste anges" });
+            return res.status(400).send({ message: 'Användarnamn och lösenord måste anges!' });
         }
 
         // Skapar en ny användarinstans med hashat lösenord
@@ -23,12 +23,12 @@ const register = async (req, res) => {
         const savedUser = await user.save();
 
         // Skickar respons vid lyckad registrering
-        return res.send({ message: "Lyckad registrering" });
+        return res.send({ message: 'Lyckad registrering!' });
 
     } catch (err) {
         // Loggar error och skickar respons
         console.error('Fel vid registrering:', err);
-        return res.status(500).send({ message: "Ett fel uppstod vid registrering" });
+        return res.status(500).send({ message: 'Ett fel uppstod vid registrering!' });
     }
 }
 
@@ -38,7 +38,7 @@ const login = async (req, res) => {
     try {
         // Kontrollerar att användarnamn och lösenord är angivna
         if (!req.body.username || !req.body.password) {
-            return res.status(400).send({ message: "Användarnamn och lösenord måste anges" });
+            return res.status(400).send({ message: 'Användarnamn och lösenord måste anges!' });
         }
 
         // Söker efter användare i databasen
@@ -46,7 +46,7 @@ const login = async (req, res) => {
 
         // Skickar respons om användaren inte kan hittas
         if (!user) {
-            return res.status(404).send({ message: "Användaren kunde inte hittas" });
+            return res.status(404).send({ message: 'Felaktigt användarnamn!' });
         }
 
         // Jämför det angivna lösenordet med det lagrade hash-värdet
@@ -54,7 +54,7 @@ const login = async (req, res) => {
 
         // Skickar respons om lösenordet inte är giltigt
         if (!passwordIsValid) {
-            return res.status(401).send({ message: "Felaktigt lösenord" });
+            return res.status(401).send({ message: 'Felaktigt lösenord!' });
         }
 
         // Genererar en accessToken för användaren
@@ -74,7 +74,7 @@ const login = async (req, res) => {
     } catch (err) {
         // Loggar error och skickar respons
         console.error('Fel vid inloggning:', err);
-        return res.status(500).send({ message: "Ett fel uppstod vid inloggning" });
+        return res.status(500).send({ message: 'Ett fel uppstod vid inloggning!' });
     }
 }
 
@@ -86,7 +86,7 @@ const refreshToken = async (req, res) => {
 
     // Skickar respons om requestToken är null
     if (requestToken == null) {
-        return res.status(403).json({ message: "Refreshtoken krävs!" });
+        return res.status(403).json({ message: 'Refreshtoken krävs!' });
     }
 
     try {
@@ -95,26 +95,24 @@ const refreshToken = async (req, res) => {
 
         // Skickar respons om refreshToken är null
         if (!refreshToken) {
-            res.status(403).json({ message: "Refreshtoken kan inte hittas i databasen!" });
+            res.status(403).json({ message: 'Refreshtoken finns inte i databasen!' });
             return;
         }
 
         // Raderar refreshToken från databasen och skickar respons om refreshToken har förlorat sin giltighetstid
         if (RefreshToken.verifyExpiration(refreshToken)) {
-            RefreshToken.findOneAndDelete(refreshToken._id, { useFindAndModify: false }).exec();
-            res.status(403).json({ message: "Refreshtoken är inte längre giltig. Logga in på nytt!" });
+            RefreshToken.findOneAndDelete({ _id: refreshToken._id }).exec();
+            res.status(403).json({ message: 'Refreshtoken är inte längre giltig. Logga in på nytt!' });
             return;
         }
 
         // Genererar en ny access token baserat på användarens ID
-        let newAccessToken = jwt.sign({ id: refreshToken.user._id }, config.secret, {
-            expiresIn: config.jwtExpiration,
-        });
+        let newAccessToken = jwt.sign({ id: refreshToken.user._id }, config.secret, { expiresIn: config.jwtExpiration, });
 
         // Returnerar ny access token och refreshToken som respons
         return res.status(200).json({
             accessToken: newAccessToken,
-            refreshToken: refreshToken.token,
+            refreshToken: refreshToken.token
         });
     } catch (err) {
         // Felhantering om något går fel under processen
@@ -129,25 +127,25 @@ const logout = async (req, res) => {
         // Skickar respons om användar-ID saknas i URL:en
         const userId = req.params.id;
         if (!userId) {
-            return res.status(400).send({ message: "Användar-ID saknas!" });
+            return res.status(400).send({ message: 'Användar-ID måste skickas med!' });
         }
 
         // Skickar respons om användaren inte existerar i databasen
         const userExists = await User.exists({ _id: userId });
         if (!userExists) {
-            return res.status(404).send({ message: "Användaren kunde inte hittas i databasen!" });
+            return res.status(404).send({ message: 'Användaren finns inte i databasen!' });
         }
 
         // Tar bort refresh token från databasen baserat på användarens ID
         await RefreshToken.findOneAndDelete({ user: userId }).exec();
 
         // Skickar respons att användaren är utloggad
-        return res.status(200).send({ message: "Utloggad" });
+        return res.status(200).send({ message: 'Utloggad!' });
 
     } catch (err) {
         // Loggar error och skickar respons
         console.error('Fel vid utloggning:', err);
-        return res.status(500).send({ message: "Ett fel uppstod vid utloggning" });
+        return res.status(500).send({ message: 'Ett fel uppstod vid utloggning!' });
     }
 }
 

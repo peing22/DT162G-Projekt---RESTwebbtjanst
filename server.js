@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // Importerar moduler
 const express = require('express');
-const cors = require("cors");
+const cors = require('cors');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth.routes');
 const exerciseRoutes = require('./routes/exercise.routes');
@@ -13,7 +13,7 @@ const app = express();
 
 // Konfigurerar CORS
 var corsOptions = {
-    origin: "http://localhost:3000"
+    origin: 'http://localhost:3000'
 };
 app.use(cors(corsOptions));
 

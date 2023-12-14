@@ -8,7 +8,7 @@ const refreshTokenSchema = new mongoose.Schema({
     token: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
     },
     expiryDate: Date,
 });
@@ -47,4 +47,4 @@ refreshTokenSchema.statics.verifyExpiration = (token) => {
 }
 
 // Kompilerar schemaobjektet till ett model-objekt som exporteras
-module.exports =  mongoose.model("RefreshToken", refreshTokenSchema);
+module.exports =  mongoose.model('RefreshToken', refreshTokenSchema);

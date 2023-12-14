@@ -9,7 +9,7 @@ const getExercises = async (req, res) => {
 
         // Skickar respons om övningar inte existerar
         if (exercises.length === 0) {
-            return res.status(404).send({ message: 'Övningar kunde inte hittas' });
+            return res.status(404).send({ message: 'Det finns inga övningar i databasen!' });
         }
 
         // Skickar respons i JSON-format
@@ -18,7 +18,7 @@ const getExercises = async (req, res) => {
     } catch (error) {
         // Loggar error och skickar respons
         console.error('Fel vid hämtning av övningar:', error);
-        res.status(500).send({ message: 'Ett fel uppstod vid hämtning av övningar' });
+        res.status(500).send({ message: 'Ett fel uppstod vid hämtning av övningar!' });
     }
 }
 
@@ -30,7 +30,7 @@ const getExerciseById = async (req, res) => {
 
         // Skickar respons om övningen inte existerar
         if (!exercise) {
-            return res.status(404).send({ message: 'Övningen kunde inte hittas' });
+            return res.status(404).send({ message: 'Det finns ingen övning som matchar medskickat ID!' });
         }
 
         // Skickar respons i JSON-format
@@ -39,7 +39,7 @@ const getExerciseById = async (req, res) => {
     } catch (error) {
         // Loggar error och skickar respons
         console.error('Fel vid hämtning av övning:', error);
-        res.status(500).send({ message: 'Ett fel uppstod vid hämtning av övning' });
+        res.status(500).send({ message: 'Ett fel uppstod vid hämtning av övning!' });
     }
 }
 
@@ -48,13 +48,13 @@ const addExercise = async (req, res) => {
     try {
         // Skickar respons om nödvändig data inte finns i req.body
         if (!req.body.exercisename || !req.body.description) {
-            return res.status(400).send({ message: 'Namn och beskrivning måste skickas med' });
+            return res.status(400).send({ message: 'Namn och beskrivning måste skickas med!' });
         }
 
         // Kontrollera om filen finns i förfrågan
         const file = req.file;
         if (!file) {
-            return res.status(400).send({ message: 'Videofil måste skickas med' });
+            return res.status(400).send({ message: 'Videofil måste skickas med!' });
         }
 
         // Skapar en ny övning med data från förfrågan
@@ -73,7 +73,7 @@ const addExercise = async (req, res) => {
     } catch (error) {
         // Loggar error och skickar respons
         console.error('Fel vid tillägg av övning:', error);
-        res.status(500).send({ message: 'Ett fel uppstod vid tillägg av övning' });
+        res.status(500).send({ message: 'Ett fel uppstod vid tillägg av övning!' });
     }
 }
 
@@ -82,7 +82,7 @@ const updateExercise = async (req, res) => {
     try {
         // Skickar respons om nödvändig data inte finns i req.body
         if (!req.body.exercisename || !req.body.description) {
-            return res.status(400).send({ message: 'Namn och beskrivning måste skickas med' });
+            return res.status(400).send({ message: 'Namn och beskrivning måste skickas med!' });
         }
 
         // Hämtar befintlig övning från databasen
@@ -90,7 +90,7 @@ const updateExercise = async (req, res) => {
 
         // Skickar respons om övningen inte existerar
         if (!existingExercise) {
-            return res.status(404).send({ message: 'Övningen kunde inte hittas' });
+            return res.status(404).send({ message: 'Det finns ingen övning som matchar medskickat ID!' });
         }
 
         // Lagrar befintligt filenamn
@@ -114,7 +114,7 @@ const updateExercise = async (req, res) => {
     } catch (error) {
         // Loggar error och skickar respons
         console.error('Fel vid uppdatering av övning:', error);
-        res.status(500).send({ message: 'Ett fel uppstod vid uppdatering av övning' });
+        res.status(500).send({ message: 'Ett fel uppstod vid uppdatering av övning!' });
     }
 }
 
@@ -126,7 +126,7 @@ const deleteExercise = async (req, res) => {
 
         // Skickar respons om övningen inte existerar
         if (!deletedExercise) {
-            return res.status(404).send({ message: 'Övningen kunde inte hittas' });
+            return res.status(404).send({ message: 'Det finns ingen övning som matchar medskickat ID!' });
         }
 
         // Skickar respons med den raderade övningen i JSON-format
@@ -135,7 +135,7 @@ const deleteExercise = async (req, res) => {
     } catch (error) {
         // Loggar error och skickar respons
         console.error('Fel vid radering av övning:', error);
-        res.status(500).send({ message: 'Ett fel uppstod vid radering av övning' });
+        res.status(500).send({ message: 'Ett fel uppstod vid radering av övning!' });
     }
 }
 
