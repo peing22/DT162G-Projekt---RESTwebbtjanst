@@ -9,6 +9,7 @@ router.post('/register', authController.register);
 // Logga in en användare
 router.post('/login', authController.login);
 
+// Förnya token
 router.post('/refreshtoken', authController.refreshToken)
 
 // Logga ut en användare

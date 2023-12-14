@@ -6,7 +6,7 @@ const express = require('express');
 const cors = require("cors");
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth.routes');
-const testRoutes = require('./routes/test.routes'); // TEST
+const exerciseRoutes = require('./routes/exercise.routes');
 
 // Skapar express-app
 const app = express();
@@ -42,7 +42,10 @@ database.once('connected', () => {
 
 // Använder routes
 app.use(authRoutes);
-app.use(testRoutes); // TEST
+app.use(exerciseRoutes);
+
+// Gör det möjligt att komma åt filer i uploads-katalogen
+app.use('/uploads', express.static('uploads'));
 
 // Lagrar portnummer som servern kommer lyssna på
 const PORT = process.env.PORT || 3050;
