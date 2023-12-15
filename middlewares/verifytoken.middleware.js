@@ -1,6 +1,5 @@
 // Importerar moduler
 const jwt = require('jsonwebtoken');
-const config = require('../config/auth.config');
 const { TokenExpiredError } = jwt;
 
 // Metod för att hantera fel vid verifiering av token
@@ -27,7 +26,7 @@ verifyToken = (req, res, next) => {
 
     // Verifierar token med hjälp av jwt.verify-metoden
     jwt.verify(token,
-        config.secret,
+        process.env.TOKEN_SECRET,
         (err, decoded) => {
             if (err) {
                 return catchError(err, res);

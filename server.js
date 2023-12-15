@@ -48,7 +48,7 @@ app.use(exerciseRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Lagrar portnummer som servern kommer lyssna på
-const PORT = process.env.PORT || 3050;
+const PORT = process.env.PORT;
 
 // Startar server och skriver ut meddelande
 app.listen(PORT, () => {

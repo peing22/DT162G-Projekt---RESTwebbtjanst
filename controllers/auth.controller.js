@@ -1,7 +1,6 @@
 // Importerar moduler
 const User = require('../models/user.model');
 const RefreshToken = require('../models/refreshtoken.model');
-const config = require("../config/auth.config");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -58,7 +57,7 @@ const login = async (req, res) => {
         }
 
         // Genererar en accessToken för användaren
-        let token = jwt.sign({ id: user.id }, config.secret, { expiresIn: config.jwtExpiration });
+        let token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 
         // Genererar en refreshToken för användaren
         let refreshToken = await RefreshToken.createToken(user);
@@ -107,7 +106,7 @@ const refreshToken = async (req, res) => {
         }
 
         // Genererar en ny access token baserat på användarens ID
-        let newAccessToken = jwt.sign({ id: refreshToken.user._id }, config.secret, { expiresIn: config.jwtExpiration, });
+        let newAccessToken = jwt.sign({ id: refreshToken.user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN, });
 
         // Returnerar ny access token och refreshToken som respons
         return res.status(200).json({
