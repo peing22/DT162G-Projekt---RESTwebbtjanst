@@ -1,9 +1,9 @@
 // Importerar moduler
+const multer = require("multer");
 const express = require('express');
 const router = express.Router();
 const exerciseController = require('../controllers/exercise.controller');
 const verifyToken = require('../middlewares/verifytoken.middleware');
-const multer = require("multer");
 
 // Konfigurerar lagring av filer i katalogen uploads
 const storage = multer.diskStorage({

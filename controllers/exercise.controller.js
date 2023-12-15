@@ -1,4 +1,6 @@
 // Importerar moduler
+const fs = require('fs').promises;
+const path = require('path');
 const Exercise = require('../models/exercise.model');
 
 // Funktion för att hämta alla övningar
@@ -121,6 +123,9 @@ const updateExercise = async (req, res) => {
 // Funktion för att radera en övning utifrån ID
 const deleteExercise = async (req, res) => {
     try {
+        // Hämtar och lagrar information om övningen baserat på ID
+        const exerciseToDelete = await Exercise.findById(req.params.id);
+
         // Raderar övning från databasen baserat på ID
         const deletedExercise = await Exercise.findByIdAndDelete(req.params.id);
 
@@ -129,8 +134,12 @@ const deleteExercise = async (req, res) => {
             return res.status(404).send({ message: 'Det finns ingen övning som matchar medskickat ID!' });
         }
 
+        // Raderar den tillhörande videofilen från uploads-katalogen
+        const filePath = path.join(__dirname, '../uploads', exerciseToDelete.filename);
+        await fs.unlink(filePath);
+
         // Skickar respons med den raderade övningen i JSON-format
-        res.json(deletedExercise);
+        return res.send({ message: 'Övningen har raderats!' });
 
     } catch (error) {
         // Loggar error och skickar respons
