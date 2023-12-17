@@ -19,8 +19,8 @@ const upload = multer({ storage });
 // Hämta alla övningar
 router.get('/exercises', exerciseController.getExercises);
 
-// Hämta en övning utifrån ID (skyddad av token)
-router.get('/exercises/:id', verifyToken, exerciseController.getExerciseById);
+// Hämta en övning utifrån ID
+router.get('/exercises/:id', exerciseController.getExerciseById);
 
 // Lägg till övning (skyddad av token)
 router.post('/exercises', verifyToken, upload.single('filename'), exerciseController.addExercise);
