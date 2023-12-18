@@ -2,9 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth.controller');
+const verifyToken = require('../middlewares/verifytoken.middleware');
 
-// Registrera en ny användare
-router.post('/register', authController.register);
+// Registrera en ny användare (skyddad av token)
+router.post('/register', verifyToken, authController.register);
 
 // Logga in en användare
 router.post('/login', authController.login);
