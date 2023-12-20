@@ -10,7 +10,7 @@ const register = async (req, res) => {
     try {
         // Kontrollerar att användarnamn och lösenord är angivna
         if (!req.body.username || !req.body.password) {
-            return res.status(400).send({ message: 'Användarnamn och lösenord måste anges!' });
+            return res.status(400).send({ message: 'Ange användarnamn och lösenord!' });
         }
 
         // Skapar en ny användarinstans med hashat lösenord
@@ -37,7 +37,7 @@ const login = async (req, res) => {
     try {
         // Kontrollerar att användarnamn och lösenord är angivna
         if (!req.body.username || !req.body.password) {
-            return res.status(400).send({ message: 'Användarnamn och lösenord måste anges!' });
+            return res.status(400).send({ message: 'Ange användarnamn och lösenord!' });
         }
 
         // Söker efter användare i databasen

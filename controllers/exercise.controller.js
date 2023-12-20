@@ -50,7 +50,7 @@ const addExercise = async (req, res) => {
     try {
         // Skickar respons om nödvändig data inte finns i req.body
         if (!req.body.exercisename || !req.body.description) {
-            return res.status(400).send({ message: 'Namn och beskrivning måste skickas med!' });
+            return res.status(400).send({ message: 'Namn och beskrivning måste anges!' });
         }
 
         // Kontrollera om filen finns i förfrågan
@@ -84,7 +84,7 @@ const updateExercise = async (req, res) => {
     try {
         // Skickar respons om nödvändig data inte finns i req.body
         if (!req.body.exercisename || !req.body.description) {
-            return res.status(400).send({ message: 'Namn och beskrivning måste skickas med!' });
+            return res.status(400).send({ message: 'Namn och beskrivning måste anges!' });
         }
 
         // Hämtar befintlig övning från databasen
