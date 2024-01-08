@@ -6,7 +6,7 @@ const { TokenExpiredError } = jwt;
 const catchError = (err, res) => {
     if (err instanceof TokenExpiredError) {
 
-        // Skicker respons om token har gått ut
+        // Skicker respons om accessToken har gått ut
         return res.status(401).send({ message: 'Obehörig! Accesstoken har gått ut!' });
     }
     // Skickar respons om felet beror på något annat
@@ -16,15 +16,15 @@ const catchError = (err, res) => {
 // Middleware-funktion
 verifyToken = (req, res, next) => {
 
-    // Hämtar token från headerinformationen i förfrågan
+    // Hämtar accessToken från headerinformationen i förfrågan
     let token = req.headers['x-access-token'];
 
-    // Om det inte finns någon token skickas respons
+    // Om det inte finns någon accessToken skickas respons
     if (!token) {
         return res.status(403).send({ message: 'Ingen accesstoken tillhandahållen!' });
     }
 
-    // Verifierar token med hjälp av jwt.verify-metoden
+    // Verifierar accessToken med hjälp av jwt.verify-metoden
     jwt.verify(token,
         process.env.TOKEN_SECRET,
         (err, decoded) => {
@@ -32,7 +32,7 @@ verifyToken = (req, res, next) => {
                 return catchError(err, res);
             }
 
-            // Lägg till användar-ID i förfrågan om token är giltig
+            // Lägg till användar-ID i förfrågan om accessToken är giltig
             req.userId = decoded.id;
             next();
         });

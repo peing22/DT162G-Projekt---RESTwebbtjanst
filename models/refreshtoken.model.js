@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 
-// Definierar schema-objekt för en förnyad token
+// Definierar schema-objekt för en refreshToken
 const refreshTokenSchema = new mongoose.Schema({
     token: String,
     user: {
@@ -12,7 +12,7 @@ const refreshTokenSchema = new mongoose.Schema({
     expiryDate: Date,
 });
 
-// Metod för att skapa en förnyad token
+// Metod för att skapa en refreshToken
 refreshTokenSchema.statics.createToken = async function (user) {
 
     // Skapar en ny instans av aktuell tid och adderar 7200000 (2h)
@@ -32,11 +32,11 @@ refreshTokenSchema.statics.createToken = async function (user) {
     // Sparar objektet i databasen
     let refreshToken = await _object.save();
 
-    // Returnerar den förnyade token
+    // Returnerar refreshToken
     return refreshToken.token;
 }
 
-// Metod för att verifiera när token går ut
+// Metod för att verifiera när refreshToken går ut
 refreshTokenSchema.statics.verifyExpiration = (token) => {
     return token.expiryDate.getTime() < new Date().getTime();
 }

@@ -77,10 +77,10 @@ const login = async (req, res) => {
     }
 }
 
-// Funktion för att hantera en förnyelse av access token
+// Funktion för att hantera en refreshToken
 const refreshToken = async (req, res) => {
 
-    // Lagrar refreshToken från förfrågan
+    // Lagrar refreshToken från förfrågan i variabeln requestToken
     const requestToken = req.body.refreshToken;
 
     // Skickar respons om requestToken är null
@@ -105,10 +105,10 @@ const refreshToken = async (req, res) => {
             return;
         }
 
-        // Genererar en ny access token baserat på användarens ID
+        // Genererar en ny accessToken baserat på användarens ID
         let newAccessToken = jwt.sign({ id: refreshToken.user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN, });
 
-        // Returnerar ny access token och refreshToken som respons
+        // Returnerar ny accessToken och refreshToken som respons
         return res.status(200).json({
             accessToken: newAccessToken,
             refreshToken: refreshToken.token
@@ -135,7 +135,7 @@ const logout = async (req, res) => {
             return res.status(404).send({ message: 'Användaren finns inte i databasen!' });
         }
 
-        // Tar bort refresh token från databasen baserat på användarens ID
+        // Tar bort refreshToken från databasen baserat på användarens ID
         await RefreshToken.findOneAndDelete({ user: userId }).exec();
 
         // Skickar respons att användaren är utloggad
