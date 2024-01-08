@@ -94,14 +94,14 @@ const refreshToken = async (req, res) => {
 
         // Skickar respons om refreshToken är null
         if (!refreshToken) {
-            res.status(403).json({ message: 'Refreshtoken finns inte i databasen!' });
+            res.status(403).json({ message: 'Behörighet att administrera saknas!' });
             return;
         }
 
         // Raderar refreshToken från databasen och skickar respons om refreshToken har förlorat sin giltighetstid
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.findOneAndDelete({ _id: refreshToken._id }).exec();
-            res.status(403).json({ message: 'Refreshtoken är inte längre giltig. Logga in på nytt!' });
+            res.status(403).json({ message: 'Behörighet att administrera har upphört. Logga ut och logga in på nytt!' });
             return;
         }
 
