@@ -3,7 +3,7 @@ Repo för del av projektarbete i kursen *JavaScriptbaserad Webbutveckling*.
 
 ## Efter kloning av repo
 1. Kör kommandot *npm install*
-2. Skapa en .env-fil i rotkatalogen, med följande konfigurationsvariabler
+2. Skapa en .env-fil med följande konfigurationsvariabler
 
         CORS_ORIGIN=domän_från_vilken/vilka_REST-webbtjänsten_ska_acceptera_anrop (separera flera domän med ett komma utan mellanslag)  
         DATABASE_URL=anslutningssträng_till_mongodb  
