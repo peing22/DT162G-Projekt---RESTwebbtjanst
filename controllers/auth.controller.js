@@ -57,7 +57,7 @@ const login = async (req, res) => {
         }
 
         // Genererar en accessToken för användaren
-        let token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+        let accessToken = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 
         // Genererar en refreshToken för användaren
         let refreshToken = await RefreshToken.createToken(user);
@@ -66,7 +66,7 @@ const login = async (req, res) => {
         return res.status(200).send({
             id: user._id,
             username: user.username,
-            accessToken: token,
+            accessToken: accessToken,
             refreshToken: refreshToken
         });
 
@@ -77,7 +77,7 @@ const login = async (req, res) => {
     }
 }
 
-// Funktion för att hantera en refreshToken
+// Funktion för att hantera en refreshToken och generera en ny accessToken
 const refreshToken = async (req, res) => {
 
     // Lagrar refreshToken från förfrågan i variabeln requestToken
@@ -85,31 +85,31 @@ const refreshToken = async (req, res) => {
 
     // Skickar respons om requestToken är null
     if (requestToken == null) {
-        return res.status(403).json({ message: 'Refreshtoken krävs!' });
+        return res.status(403).send({ message: 'Refreshtoken krävs!' });
     }
 
     try {
-        // Lagrar refreshToken om requestToken existerar som token i databasen
+        // Om motsvarigheten till requestToken hittas i databasen lagras den i variabeln refreshToken
         let refreshToken = await RefreshToken.findOne({ token: requestToken });
 
-        // Skickar respons om refreshToken är null
+        // Skickar respons om refreshToken inte hittas
         if (!refreshToken) {
-            res.status(403).json({ message: 'Behörighet att administrera saknas!' });
+            res.status(403).send({ message: 'Behörighet att administrera saknas!' });
             return;
         }
 
-        // Raderar refreshToken från databasen och skickar respons om refreshToken har förlorat sin giltighetstid
+        // Om refreshToken har förlorat sin giltighetstid raderas den från databasen och respons skickas
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.findOneAndDelete({ _id: refreshToken._id }).exec();
-            res.status(403).json({ message: 'Behörighet att administrera har upphört. Logga ut och logga in på nytt!' });
+            res.status(403).send({ message: 'Behörighet att administrera har upphört. Logga ut och logga in på nytt!' });
             return;
         }
 
-        // Genererar en ny accessToken baserat på användarens ID
+        // Genererar en ny accessToken för användaren
         let newAccessToken = jwt.sign({ id: refreshToken.user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN, });
 
-        // Returnerar ny accessToken och refreshToken som respons
-        return res.status(200).json({
+        // Returnerar ny accessToken och befintlig refreshToken som respons
+        return res.status(200).send({
             accessToken: newAccessToken,
             refreshToken: refreshToken.token
         });

@@ -45,7 +45,7 @@ const getExerciseById = async (req, res) => {
     }
 }
 
-// Funktion för att lägga till en övning med filuppladdning
+// Funktion för att lägga till en övning
 const addExercise = async (req, res) => {
     try {
         // Skickar respons om nödvändig data inte finns i req.body

@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 
-// Definierar schema-objekt för en refreshToken
+// Definierar schemaobjekt för en refreshToken
 const refreshTokenSchema = new mongoose.Schema({
     token: String,
     user: {
@@ -16,24 +16,24 @@ const refreshTokenSchema = new mongoose.Schema({
 refreshTokenSchema.statics.createToken = async function (user) {
 
     // Skapar en ny instans av aktuell tid och adderar 7200000 (2h)
-    let expiredAt = new Date();
-    expiredAt.setTime(expiredAt.getTime() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN));
+    let expiresIn = new Date();
+    expiresIn.setTime(expiresIn.getTime() + parseInt(process.env.REFRESHTOKEN_EXPIRES_IN));
 
-    // Genererar en unik token
-    let _token = uuidv4();
+    // Genererar en unik refreshToken
+    let refreshToken = uuidv4();
 
-    // Skapar en instans av RefreshToken
-    let _object = new this({
-        token: _token,
+    // Skapar en instans av RefreshToken-objektet
+    let object = new this({
+        token: refreshToken,
         user: user._id,
-        expiryDate: expiredAt.getTime(),
+        expiryDate: expiresIn.getTime(),
     });
 
-    // Sparar objektet i databasen
-    let refreshToken = await _object.save();
+    // Sparar objektet i databasen och lagrar det i en variabel
+    let refreshTokenObj = await object.save();
 
     // Returnerar refreshToken
-    return refreshToken.token;
+    return refreshTokenObj.token;
 }
 
 // Metod för att verifiera när refreshToken går ut
