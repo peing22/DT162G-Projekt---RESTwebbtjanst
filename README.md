@@ -12,4 +12,4 @@ Repo för del av projektarbete i kursen *JavaScriptbaserad Webbutveckling*.
         JWT_EXPIRES_IN=60000 (motsvarar 1 minut, kan ändras till önskat värde)  
         REFRESHTOKEN_EXPIRES_IN=7200000 (motsvarar 2 timmar, kan ändras till önskat värde)  
 
-3. Kör kommandot *npm start*.
+3. Kör kommandot *npm start*
