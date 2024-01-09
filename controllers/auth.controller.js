@@ -12,7 +12,6 @@ const register = async (req, res) => {
         if (!req.body.username || !req.body.password) {
             return res.status(400).send({ message: 'Ange användarnamn och lösenord!' });
         }
-
         // Skapar en ny användarinstans med hashat lösenord
         const user = new User({
             username: req.body.username,
@@ -39,7 +38,6 @@ const login = async (req, res) => {
         if (!req.body.username || !req.body.password) {
             return res.status(400).send({ message: 'Ange användarnamn och lösenord!' });
         }
-
         // Söker efter användare i databasen
         const user = await User.findOne({ username: req.body.username });
 
@@ -47,7 +45,6 @@ const login = async (req, res) => {
         if (!user) {
             return res.status(404).send({ message: 'Felaktigt användarnamn!' });
         }
-
         // Jämför det angivna lösenordet med det lagrade hash-värdet
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 
@@ -55,7 +52,6 @@ const login = async (req, res) => {
         if (!passwordIsValid) {
             return res.status(401).send({ message: 'Felaktigt lösenord!' });
         }
-
         // Genererar en accessToken för användaren
         let accessToken = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 
@@ -97,14 +93,12 @@ const refreshToken = async (req, res) => {
             res.status(403).send({ message: 'Behörighet att administrera saknas!' });
             return;
         }
-
         // Om refreshToken har förlorat sin giltighetstid raderas den från databasen och respons skickas
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.findOneAndDelete({ _id: refreshToken._id }).exec();
             res.status(403).send({ message: 'Behörighet att administrera har upphört. Logga ut och logga in på nytt!' });
             return;
         }
-
         // Genererar en ny accessToken för användaren
         let newAccessToken = jwt.sign({ id: refreshToken.user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN, });
 
@@ -128,13 +122,11 @@ const logout = async (req, res) => {
         if (!userId) {
             return res.status(400).send({ message: 'Användar-ID måste skickas med!' });
         }
-
         // Skickar respons om användaren inte existerar i databasen
         const userExists = await User.exists({ _id: userId });
         if (!userExists) {
             return res.status(404).send({ message: 'Användaren finns inte i databasen!' });
         }
-
         // Tar bort refreshToken från databasen baserat på användarens ID
         await RefreshToken.findOneAndDelete({ user: userId }).exec();
 

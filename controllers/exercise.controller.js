@@ -13,7 +13,6 @@ const getExercises = async (req, res) => {
         if (exercises.length === 0) {
             return res.status(404).send({ message: 'Det finns inga övningar i databasen!' });
         }
-
         // Skickar respons i JSON-format
         res.json(exercises);
 
@@ -34,7 +33,6 @@ const getExerciseById = async (req, res) => {
         if (!exercise) {
             return res.status(404).send({ message: 'Det finns ingen övning som matchar medskickat ID!' });
         }
-
         // Skickar respons i JSON-format
         res.json(exercise);
 
@@ -52,20 +50,17 @@ const addExercise = async (req, res) => {
         if (!req.body.exercisename || !req.body.description) {
             return res.status(400).send({ message: 'Namn och beskrivning måste anges!' });
         }
-
-        // Kontrollera om filen finns i förfrågan
+        // Kontrollerar om filen finns i förfrågan
         const file = req.file;
         if (!file) {
             return res.status(400).send({ message: 'Videofil måste skickas med!' });
         }
-
         // Skapar en ny övning med data från förfrågan
         const newExercise = new Exercise({
             exercisename: req.body.exercisename,
             description: req.body.description,
             filename: file.filename
         });
-
         // Sparar den nya övningen i databasen
         const savedExercise = await newExercise.save();
 
@@ -86,7 +81,6 @@ const updateExercise = async (req, res) => {
         if (!req.body.exercisename || !req.body.description) {
             return res.status(400).send({ message: 'Namn och beskrivning måste anges!' });
         }
-
         // Hämtar befintlig övning från databasen
         const existingExercise = await Exercise.findById(req.params.id);
 
@@ -94,8 +88,7 @@ const updateExercise = async (req, res) => {
         if (!existingExercise) {
             return res.status(404).send({ message: 'Det finns ingen övning som matchar medskickat ID!' });
         }
-
-        // Lagrar befintligt filenamn
+        // Lagrar befintligt filnamn
         const filename = existingExercise.filename;
 
         // Uppdaterar övning i databasen baserat på ID med data från request body
@@ -109,7 +102,6 @@ const updateExercise = async (req, res) => {
             // Returnerar den uppdaterade övningen istället för den gamla
             { new: true } 
         );
-
         // Skickar respons med den uppdaterade övningen i JSON-format
         res.json(updatedExercise);
 
@@ -133,7 +125,6 @@ const deleteExercise = async (req, res) => {
         if (!deletedExercise) {
             return res.status(404).send({ message: 'Det finns ingen övning som matchar medskickat ID!' });
         }
-
         // Raderar den tillhörande videofilen från uploads-katalogen
         const filePath = path.join(__dirname, '../uploads', exerciseToDelete.filename);
         await fs.unlink(filePath);

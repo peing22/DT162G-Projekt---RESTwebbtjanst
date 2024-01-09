@@ -22,13 +22,13 @@ router.get('/exercises', exerciseController.getExercises);
 // Hämta en övning utifrån ID
 router.get('/exercises/:id', exerciseController.getExerciseById);
 
-// Lägg till övning (skyddad av token)
+// Lägg till övning (skyddad av JWT)
 router.post('/exercises', verifyToken, upload.single('filename'), exerciseController.addExercise);
 
-// Uppdatera en övning utifrån ID (skyddad av token)
+// Uppdatera en övning utifrån ID (skyddad av JWT)
 router.put('/exercises/:id', verifyToken, exerciseController.updateExercise);
 
-// Radera en övning utifrån ID (skyddad av token)
+// Radera en övning utifrån ID (skyddad av JWT)
 router.delete('/exercises/:id', verifyToken, exerciseController.deleteExercise);
 
 // Exporterar router
