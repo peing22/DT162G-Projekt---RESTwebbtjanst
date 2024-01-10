@@ -1,4 +1,4 @@
-# DT162G Projekt REST-webbtjänst
+# Projekt DT162G: REST-webbtjänst
 Repo för del av projektarbete i kursen *JavaScriptbaserad Webbutveckling*.
 
 ## Efter kloning av repo
