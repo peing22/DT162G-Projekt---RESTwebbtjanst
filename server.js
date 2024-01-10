@@ -1,7 +1,7 @@
 // Importerar och konfigurerar dotenv
 require('dotenv').config();
 
-// Importerar moduler
+// Importerar moduler och routes
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -47,7 +47,7 @@ app.use(exerciseRoutes);
 // Gör det möjligt att komma åt filer i uploads-katalogen
 app.use('/uploads', express.static('uploads'));
 
-// Lagrar portnummer som servern kommer lyssna på
+// Lagrar portnummer som servern ska lyssnar på
 const PORT = process.env.PORT;
 
 // Startar server och skriver ut meddelande
