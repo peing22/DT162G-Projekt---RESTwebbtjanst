@@ -15,20 +15,20 @@ Repo för del av projektarbete i kursen *JavaScriptbaserad Webbutveckling*.
 3. Kör kommandot *npm start*
 
 ## Tillgängliga routes
-* `POST` `/register` för att registrera ett nytt användarkonto.
+`POST` `/register` för att registrera ett nytt användarkonto.
 
-* `POST` `/login` för att logga in användare och returnera JWT och refreshtoken.
+`POST` `/login` för att logga in användare och returnera JWT och refreshtoken.
 
-* `POST` `/refreshtoken` för att förnya JWT.
+`POST` `/refreshtoken` för att förnya JWT.
 
-* `POST` `/logout/{id}` för att logga ut användare utifrån id.
+`POST` `/logout/{id}` för att logga ut användare utifrån id.
 
-* `GET` `/exercises` för att läsa ut samtliga övningar.
+`GET` `/exercises` för att läsa ut samtliga övningar.
 
-* `GET` `/exercises/{id}` för att läsa ut en övning utifrån id.
+`GET` `/exercises/{id}` för att läsa ut en övning utifrån id.
 
-* `POST` `/exercises` för att lägga till en övning.
+`POST` `/exercises` för att lägga till en övning.
 
-* `PUT` `/exercises/{id}` för att uppdatera en övning utifrån id.
+`PUT` `/exercises/{id}` för att uppdatera en övning utifrån id.
 
-* `DELETE` `/exercises/{id}` för att radera en övning utifrån id.
+`DELETE` `/exercises/{id}` för att radera en övning utifrån id.
