@@ -1,4 +1,4 @@
-# Projekt DT162G: REST-webbtjänst
+# Träna för att leva (REST-webbtjänst)
 Repo för del av projektarbete i kursen *JavaScriptbaserad Webbutveckling*.
 
 ## Efter kloning av repo
